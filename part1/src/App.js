@@ -1,81 +1,59 @@
-const Header = (props) => {
-  return(
-    <>
-      <h1>
-        {props.course}
-      </h1>
-    </>
-  )
-} 
+import { useState } from 'react'
 
-/*Being passed an array of 3 objects
-Each object has a name and exercises
-Put each in a paragraph
-*/
-const Content = (props) => {
-  
-  const first = props.parts[0]
-  const second = props.parts[1]
-  const third = props.parts[2]
+/* const Button = (props) => (
+  <button onClick={props.handleClick}>
+    {props.text}
+  </button>
+) */
 
-  return(
-    <>
-      <p>
-        {first.name} {first.exercises}
-      </p>
-      <p>
-        {second.name} {second.exercises}
-      </p>
-      <p>
-        {third.name} {third.exercises}
-      </p>
-    </>
-  )
-} 
-
-/*Being passed array of 3 objects
-Each object has an exercises parameter.
-Add all of them and display that in a paragraph */
-const Total = (props) => {
-  const first = props.parts[0]
-  const second = props.parts[1]
-  const third = props.parts[2]
-  const numExercises = first.exercises + second.exercises + third.exercises
-  return(
-    <>
-      <p>
-        Number of exercises {numExercises}
-      </p>
-    </>
-  )
-} 
+const Statistics = (props) => {
+  const good = props.good
+  const neutral= props.neutral
+  const bad = props.bad
+  if (good+neutral+bad === 0) {
+    return(<p>No feedback given</p>)
+  }
+  else{
+    return(
+      <>
+        <p>Good: {good}</p>
+        <p>Neutral: {neutral}</p>
+        <p>Bad: {bad}</p>
+        <p>Total Votes: {good + neutral + bad}</p>
+        <p>Average: {(good + (neutral * 0) + (bad * -1)) / (good + neutral + bad)}</p>
+        <p>Positive Percentage: {good / (good + neutral + bad)}</p>
+      </>
+    )
+  }  
+}
 
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  // save clicks of each button to its own state
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
 
-
-
+  
   return (
     <div>
-      <Header course={course.name}/>
-      <Content parts={course.parts}/>
-      <Total parts={course.parts}/>
+      <h1>Give feedback</h1>
+
+      <button onClick={() => setGood(good+1)}> 
+        Good 
+      </button>
+      <button onClick={() => setNeutral(neutral+1)}> 
+        Neutral
+      </button>
+      <button onClick={() => setBad(bad+1)}> 
+        Bad
+      </button>
+
+      <h1>Statistics</h1>
+      <Statistics 
+        good = {good} neutral = {neutral} bad = {bad}>
+      </Statistics>
+      
+
     </div>
   )
 }

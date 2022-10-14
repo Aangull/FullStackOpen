@@ -13,6 +13,18 @@ const AnecdoteLine = (props) => {
   )
 }
 
+const VotesLine = (props) => {
+  const currentVotes = props.currentVotes
+  if(currentVotes>=0){
+    return(
+      <h3>has {currentVotes} votes</h3>
+    )
+  }
+  else{
+    return
+  }
+}
+
 
 const App = () => {
   const anecdotes = [
@@ -24,16 +36,34 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ]
+
+  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [selected, setSelected] = useState('Anecdote goes here')
 
-  const handleButtonPress = () => {
-    setSelected(anecdotes[Math.floor(Math.random() * 6)])
-  }
+  let change; //This variable will hold the current
+
+  const newAnecdote = () => {
+    change = () => Math.floor(Math.random() * anecdotes.length); //This will generate a random number from 0 to the length of the array
+    setSelected(change);
+  };
+
+  const addVote = () => {
+    //1) Copy of the last state of votes
+    const votesCopy = [...votes];
+    //2) Increment by one the value for the correspondent anecdote
+    votesCopy[selected] += 1; //Grab the last value and add 1
+    //3) Set the array with the update votes to the component's state
+    setVotes(votesCopy);
+  };
+
   
   return (
     <div>
-      <Button handleClick={() => handleButtonPress()} text='Press button'/>
-      <AnecdoteLine text={selected}/>
+      <AnecdoteLine text={anecdotes[selected]}/>
+      <VotesLine currentVotes={votes[selected]}/>
+      <Button handleClick={() => addVote()} text='Vote'/>
+      <Button handleClick={() => newAnecdote()} text='New anecdote'/>
+      
     </div>
   )
 }

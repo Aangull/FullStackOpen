@@ -17,7 +17,7 @@ const VotesLine = (props) => {
   const currentVotes = props.currentVotes
   if(currentVotes>=0){
     return(
-      <h3>has {currentVotes} votes</h3>
+      <p>{currentVotes} votes</p>
     )
   }
   else{
@@ -38,9 +38,10 @@ const App = () => {
   ]
 
   const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0]);
-  const [selected, setSelected] = useState('Anecdote goes here')
+  const [selected, setSelected] = useState(0)
+  const [mostVotes, setMostVotes] = useState(0)
 
-  let change; //This variable will hold the current
+  let change; //This variable will hold the current index anecdote
 
   const newAnecdote = () => {
     change = () => Math.floor(Math.random() * anecdotes.length); //This will generate a random number from 0 to the length of the array
@@ -52,17 +53,25 @@ const App = () => {
     const votesCopy = [...votes];
     //2) Increment by one the value for the correspondent anecdote
     votesCopy[selected] += 1; //Grab the last value and add 1
-    //3) Set the array with the update votes to the component's state
+    //3 Compare votes to mostVotes index
+    if(votesCopy[selected]>votesCopy[mostVotes]){
+      setMostVotes(selected)
+    }
+    //4) Set the array with the update votes to the component's state
     setVotes(votesCopy);
   };
 
   
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <AnecdoteLine text={anecdotes[selected]}/>
       <VotesLine currentVotes={votes[selected]}/>
       <Button handleClick={() => addVote()} text='Vote'/>
-      <Button handleClick={() => newAnecdote()} text='New anecdote'/>
+      <Button handleClick={() => newAnecdote()} text='Next anecdote'/>
+      <h1>Anecdote with the most votes</h1>
+      <AnecdoteLine text={anecdotes[mostVotes]}/>
+      <VotesLine currentVotes={votes[mostVotes]}/>
       
     </div>
   )
